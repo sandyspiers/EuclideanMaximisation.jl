@@ -1,12 +1,15 @@
 # Euclidean Max-Sum Cut Algorithm (EMSCA)
 
-This repo contains an exact solver for the general Euclidean max-sum problems of type
+This repo contains an exact solver for binary quadratic programs type
 
 ```txt
 max  <Qx,x>
 s.t. Ax <= a
      x >= 0.
 ```
+
+where `Q` is a Euclidean distance matrix.
+This repo is based on [1].
 
 ## Dependencies
 
@@ -29,6 +32,17 @@ s.t. Ax <= a
   - Documentation, scripts and analysis for the results shown in [1].
     See `results/readme.md` for more information.
 
+## Results Replication
+
+To replicate the results from [1], firstly populate `results/data` with benchmark instances from the [MDPLIB 2.0 test library](https://www.uv.es/rmarti/paper/mdp.html) (see `results/readme.md` for more information).
+Then, run
+
+```bash
+python results/run.py
+```
+
+This will run through all numerical experiments described in [1], and save the results to `results/results.log`.
+
 ## References
 
-[1] Hoa T. Bui, Sandy Spiers, Ryan Loxton, *Cutting Plane Algorithms on Euclidean Distance Maximisation are Exact*, Manuscript under review.
+[1] Hoa T. Bui, Sandy Spiers, Ryan Loxton, 2023. *Cutting Plane Algorithms are Exact for Euclidean Max-Sum Problems*, Manuscript under review.
