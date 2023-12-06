@@ -56,6 +56,21 @@ def solve_with_best_solvers(instance_generator, *args):
                 record_results(mdl)
 
 
+def solve_with_oa_solvers(instance_generator, *args):
+    mdl: EmsModel
+    solvers = ["repoa", "concave_oa"]
+    rootcut = False
+    for s in solvers:
+        with instance_generator(*args) as mdl:
+            mdl.verbose = 0
+            mdl.solver = s
+            mdl.add_lp_tangents = rootcut
+            mdl.name = f"{mdl.name}_{s}_{rootcut}"
+            mdl.parameters.timelimit = 600
+            mdl.solve()
+            record_results(mdl)
+
+
 def run_CDP_tests(directory, solver_fn=solve_with_all_solvers):
     pool = Pool()
     for file in os.listdir(directory):
