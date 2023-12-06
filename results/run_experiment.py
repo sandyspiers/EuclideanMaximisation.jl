@@ -15,16 +15,17 @@ from .instance_handler import (
 from emsca.model import EmsModel
 
 LOG_FILE = "results/results_test.log"
-TIME_LIMIT = 0.1
-
-RUN_CDP = False
-RUN_GDP = False
-RUN_RCDP = True
-RUN_RGDP = True
+TIME_LIMIT = 600
 
 ALL_SOLVERS = EmsModel.ALL_SOLVER_OPTIONS
 DC_SOLVERS = [(s, rc) for s in ["repoa", "fcard"] for rc in [True, "rootonly", False]]
 OA_SOLVERS = [(s, False) for s in ["repoa", "concave_oa"]]
+
+# if run, which solvers
+CDP = True, ALL_SOLVERS
+GDP = True, ALL_SOLVERS
+RCDP = True, DC_SOLVERS
+RGDP = True, DC_SOLVERS
 
 
 def record_results(mdl: EmsModel):
@@ -97,29 +98,29 @@ def get_RGDP_parameters():
 
 if __name__ == "__main__":
     # CDP tests
-    if RUN_CDP:
+    if CDP[0]:
         run_para_tests(
-            ALL_SOLVERS,
+            CDP[1],
             capacitated_diversity_problem_from_file,
             get_file_names("results/data/CDP", "CDP"),
         )
 
     # GDP tests
-    if RUN_GDP:
+    if GDP[0]:
         run_para_tests(
-            ALL_SOLVERS,
+            GDP[1],
             generalized_diversity_problem_from_file,
             get_file_names("results/data/GDP", "GDP"),
         )
 
     # RCDP tests
-    if RUN_RCDP:
+    if RCDP[0]:
         run_para_tests(
-            DC_SOLVERS, random_capacitated_diversity_problem, get_RCDP_parameters()
+            RCDP[1], random_capacitated_diversity_problem, get_RCDP_parameters()
         )
 
     # RGDP tests
-    if RUN_RGDP:
+    if RGDP[0]:
         run_para_tests(
-            DC_SOLVERS, random_generalized_diversity_problem, get_RGDP_parameters()
+            RGDP[1], random_generalized_diversity_problem, get_RGDP_parameters()
         )
