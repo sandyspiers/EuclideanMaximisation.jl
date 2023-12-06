@@ -56,31 +56,31 @@ def solve_with_best_solvers(instance_generator, *args):
                 record_results(mdl)
 
 
-def run_CDP_tests(directory):
+def run_CDP_tests(directory, solver_fn=solve_with_all_solvers):
     pool = Pool()
     for file in os.listdir(directory):
         if file.__contains__("GKD"):
             pool.apply_async(
-                solve_with_all_solvers,
+                solver_fn,
                 (capacitated_diversity_problem_from_file, f"{directory}/{file}"),
             )
     pool.close()
     pool.join()
 
 
-def run_GDP_tests(directory):
+def run_GDP_tests(directory, solver_fn=solve_with_all_solvers):
     pool = Pool()
     for file in os.listdir(directory):
         if file.__contains__("GKD"):
             pool.apply_async(
-                solve_with_all_solvers,
+                solver_fn,
                 (generalized_diversity_problem_from_file, f"{directory}/{file}"),
             )
     pool.close()
     pool.join()
 
 
-def run_RCDP_tests():
+def run_RCDP_tests(solver_fn=solve_with_best_solvers):
     seed = 0
     pool = Pool()
     for num in [1000, 1500, 2000, 2500, 3000]:
@@ -89,7 +89,7 @@ def run_RCDP_tests():
                 for k in range(5):
                     seed += 1
                     pool.apply_async(
-                        solve_with_best_solvers,
+                        solver_fn,
                         (
                             random_capacitated_diversity_problem,
                             num,
@@ -102,7 +102,7 @@ def run_RCDP_tests():
     pool.join()
 
 
-def run_RGDP_tests():
+def run_RGDP_tests(solver_fn=solve_with_best_solvers):
     seed = 0
     pool = Pool()
     for num in [1000, 1500, 2000, 2500, 3000]:
@@ -112,7 +112,7 @@ def run_RGDP_tests():
                     for k in range(5):
                         seed += 1
                         pool.apply_async(
-                            solve_with_best_solvers,
+                            solver_fn,
                             (
                                 random_generalized_diversity_problem,
                                 num,
