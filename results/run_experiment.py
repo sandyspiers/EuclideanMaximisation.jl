@@ -56,7 +56,10 @@ def run_para_tests(solver_setups, generator, parameters):
     pool = Pool()
     for solver, lp_tangents in solver_setups:
         for paras in parameters:
-            args = (solver, lp_tangents, generator(*paras))
+            if isinstance(paras, str):
+                args = (solver, lp_tangents, generator(paras))
+            else:
+                args = (solver, lp_tangents, generator(*paras))
             pool.apply_async(standard_solve, args)
     pool.close()
     pool.join()
