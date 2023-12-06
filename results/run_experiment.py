@@ -5,7 +5,7 @@ import sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 from multiprocessing import Pool
 
-from .instance_handler import (
+from results.instance_handler import (
     capacitated_diversity_problem_from_file,
     generalized_diversity_problem_from_file,
     random_capacitated_diversity_problem,
