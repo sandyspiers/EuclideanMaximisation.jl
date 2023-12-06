@@ -6,10 +6,10 @@
 #      This makes sure the linear relaxation of a EmsModel is a CplexModel and NOT an EmsModel
 #   2. Returns the variable mapping with the relaxed model.
 
+from collections import defaultdict
+
 from docplex.mp.model import Model as CplexModel
 from docplex.mp.utils import DocplexLinearRelaxationError
-
-from collections import defaultdict
 
 
 class LinearRelaxer(object):

@@ -115,11 +115,11 @@ if __name__ == "__main__":
     # RCDP tests
     if RUN_RCDP:
         run_para_tests(
-            DC, random_capacitated_diversity_problem, get_RCDP_parameters()
+            DC_SOLVERS, random_capacitated_diversity_problem, get_RCDP_parameters()
         )
 
     # RGDP tests
     if RUN_RGDP:
         run_para_tests(
-            DC, random_generalized_diversity_problem, get_RGDP_parameters()
+            DC_SOLVERS, random_generalized_diversity_problem, get_RGDP_parameters()
         )
