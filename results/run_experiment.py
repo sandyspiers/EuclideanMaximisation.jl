@@ -21,11 +21,12 @@ ALL_SOLVERS = EmsModel.ALL_SOLVER_OPTIONS
 DC_SOLVERS = [(s, rc) for s in ["repoa", "fcard"] for rc in [True, "rootonly", False]]
 OA_SOLVERS = [(s, False) for s in ["repoa", "concave_oa"]]
 
-# if run, which solvers
-CDP = True, ALL_SOLVERS
-GDP = True, ALL_SOLVERS
-RCDP = True, DC_SOLVERS
-RGDP = True, DC_SOLVERS
+# Which solvers to use
+# If you dont want to run a test, leave as None or empty list
+CDP_SOLVERS = ALL_SOLVERS
+GDP_SOLVERS = ALL_SOLVERS
+RCDP_SOLVERS = DC_SOLVERS
+RGDP_SOLVERS = DC_SOLVERS
 
 
 def record_results(mdl: EmsModel):
@@ -98,29 +99,29 @@ def get_RGDP_parameters():
 
 if __name__ == "__main__":
     # CDP tests
-    if CDP[0]:
+    if CDP_SOLVERS:
         run_para_tests(
-            CDP[1],
+            CDP_SOLVERS,
             capacitated_diversity_problem_from_file,
             get_file_names("results/data/CDP", "CDP"),
         )
 
     # GDP tests
-    if GDP[0]:
+    if GDP_SOLVERS:
         run_para_tests(
-            GDP[1],
+            GDP_SOLVERS,
             generalized_diversity_problem_from_file,
             get_file_names("results/data/GDP", "GDP"),
         )
 
     # RCDP tests
-    if RCDP[0]:
+    if RCDP_SOLVERS:
         run_para_tests(
-            RCDP[1], random_capacitated_diversity_problem, get_RCDP_parameters()
+            RCDP_SOLVERS, random_capacitated_diversity_problem, get_RCDP_parameters()
         )
 
     # RGDP tests
-    if RGDP[0]:
+    if RGDP_SOLVERS:
         run_para_tests(
-            RGDP[1], random_generalized_diversity_problem, get_RGDP_parameters()
+            RGDP_SOLVERS, random_generalized_diversity_problem, get_RGDP_parameters()
         )
