@@ -14,7 +14,7 @@ from .instance_handler import (
 
 from emsca.model import EmsModel
 
-LOG_FILE = "results/results_test.log"
+LOG_FILE = "results/results.log"
 TIME_LIMIT = 600
 
 ALL_SOLVERS = EmsModel.ALL_SOLVER_OPTIONS
