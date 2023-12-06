@@ -10,8 +10,8 @@ For a detailed discussion on these results, please refer to [1].
   - Constrained diversity problem (`CDP/`) and generalized diversity problem (`GDP/`) test instances, available within the [MDPLIB 2.0 test library](https://www.uv.es/rmarti/paper/mdp.html).
     An instance list is added to each folder for reproducibility.
   - Dataset of Australia postcodes, `australian_postcodes.csv`, available [here](https://github.com/matthewproctor/australianpostcodes).
-  - Instance generators for randomized instances of the CDP and GDP.  
-    These generators produced the instances used in [1].
+- `instance_handler.py` A set of instance generators and file readers for the CDP and GDP.  
+  These generators produced the instances used in [1].
 - `results.log`, recording the performance of all solution methods on the above test instances (excluding the post-code dataset, see `analysis/australian_postcode_test` for more).
 - `run_experiment.py` used to read and run the above test instances.
 - `analysis/`
