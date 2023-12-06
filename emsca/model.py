@@ -166,10 +166,18 @@ class EmsModel(CplexModel):
             self.build_edm()
         if len(self.loc_dvars) == 0:
             raise Exception("No locations variables provided!")
-        second_largest_eigenvalue = np.linalg.eigvalsh(self.edm)[-2]
-        if second_largest_eigenvalue > self.REL_TOL:
+        vals = np.linalg.eigvalsh(self.edm)
+        if vals[-2] > self.REL_TOL:
             raise Exception(
-                f"Distance matrix is not Euclidean! Second largest eigenvalue = {second_largest_eigenvalue}"
+                f"Distance matrix is not Euclidean! Second largest eigenvalue = {vals[-2]}"
+            )
+        elif vals[-1] < 0:
+            raise Exception(
+                f"Distance matrix is not Euclidean! Largest eigenvalue = {vals[-1]}"
+            )
+        elif self.edm.min() < 0:
+            raise Exception(
+                f"Distance matrix is not Euclidean! Some distances negative"
             )
 
         # 3. Assert all location dvars they all nonnegative
