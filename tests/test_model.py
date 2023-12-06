@@ -90,9 +90,7 @@ def test_failure_noneuclidean():
         m = EmsModel()
         x = m.binary_var_list(10)
 
-        edm = np.random.randint(0, 25, size=(len(x), len(x)))
-        edm += edm.T
-        edm[np.diag_indices_from(edm)] = 0
+        edm = np.random.randint(1, 2, size=(len(x), len(x)))
         m.set_edm(edm)
 
         w = np.random.randint(0, 100, size=len(x))

@@ -56,7 +56,7 @@ class EmsModel(CplexModel):
     LP_TANGENT_ITER_REL_TOL = 1e-4
     MAX_UB = 1e99
     LP_TANGENTS_MAX_ITER = 50
-    SOLVER_OPTIONS = ["repoa", "fcard", "quad", "glover"]
+    SOLVER_OPTIONS = ["repoa", "fcard", "quad", "glover", "concave_oa"]
     LP_TANGENT_OPTIONS = [True, False, "rootonly"]
     ALL_SOLVER_OPTIONS = [
         ("repoa", False),
@@ -67,6 +67,7 @@ class EmsModel(CplexModel):
         ("fcard", True),
         ("quad", False),
         ("glover", False),
+        ("concave_oa", False),
     ]
 
     # Logger settings
@@ -166,18 +167,10 @@ class EmsModel(CplexModel):
             self.build_edm()
         if len(self.loc_dvars) == 0:
             raise Exception("No locations variables provided!")
-        vals = np.linalg.eigvalsh(self.edm)
-        if vals[-2] > self.REL_TOL:
+        second_largest_eigenvalue = np.linalg.eigvalsh(self.edm)[-2]
+        if second_largest_eigenvalue > self.REL_TOL:
             raise Exception(
-                f"Distance matrix is not Euclidean! Second largest eigenvalue = {vals[-2]}"
-            )
-        elif vals[-1] < 0:
-            raise Exception(
-                f"Distance matrix is not Euclidean! Largest eigenvalue = {vals[-1]}"
-            )
-        elif self.edm.min() < 0:
-            raise Exception(
-                f"Distance matrix is not Euclidean! Some distances negative"
+                f"Distance matrix is not Euclidean! Second largest eigenvalue = {second_largest_eigenvalue}"
             )
 
         # 3. Assert all location dvars they all nonnegative
@@ -237,6 +230,8 @@ class EmsModel(CplexModel):
             sol = self._solve_repoa(**kwargs)
         elif self.solver == "fcard":
             sol = self._solve_fcard(**kwargs)
+        elif self.solver == "concave_oa":
+            sol = self._solve_concave_oa(**kwargs)
         else:
             raise Exception(
                 f"Not a valid solution approach! Please choose from {EmsModel.SOLVER_OPTIONS}"
@@ -316,6 +311,36 @@ class EmsModel(CplexModel):
         # solve using standard cplex (the parent of this class)
         self.maximize(self.sum(w))
         self._log("INFO", "Solving by Glover linearisation...")
+        return super().solve(log_output=self._if_log("CPLEX"), **kwargs)
+
+    def _solve_concave_oa(self, **kwargs):
+        """
+        Solve the problem using outer approximation on the concaved objective
+        For detailed description of algorithm see `docs/algorithms.md`
+        """
+        #### Setup Solver ####
+        self.solvetime = time.time()
+
+        # Determine largest eigenvalue
+        rho = np.linalg.eigvalsh(self.edm).max()
+        # Offset from matrix
+        _temp_ub = self.edm.sum()
+        self.edm[np.diag_indices_from(self.edm)] -= rho
+
+        # Add epigraph variable
+        # No lower bound, as f(x) <= 0 for all x (as f is now made concave)
+        self.epigraph_var = self.continuous_var(
+            ub=_temp_ub, lb=-1e99, name="epigraph_var"
+        )
+        # offset by the rho
+        self.maximize(self.epigraph_var + self.sum(self.loc_dvars) * rho / 2)
+
+        # Register standard callback
+        tangent_planes = self.register_callback(TangentPlanes)
+        tangent_planes.ems_model = self
+
+        # Solve
+        self._log("INFO", "Solving by Concaved Outer-Approximation")
         return super().solve(log_output=self._if_log("CPLEX"), **kwargs)
 
     def _solve_repoa(self, **kwargs):

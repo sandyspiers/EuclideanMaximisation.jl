@@ -55,6 +55,17 @@ def test_quad_all_lp_tangents():
     m.report_solve()
 
 
+def test_concave_oa():
+    m = EmsModel()
+    x = m.binary_var_list(10)
+    for _x in x:
+        m.set_dvar_location(_x, np.random.randint(0, 100, size=2))
+    w = np.random.randint(0, 100, size=len(x))
+    m.add_constraint(m.dot(x, w) <= 0.5 * w.sum())
+    m.solve(solver="concave_oa")
+    m.report_solve()
+
+
 def test_repoa_no_lp_tangents():
     m = EmsModel()
     x = m.binary_var_list(10)
@@ -106,6 +117,40 @@ def test_glover_quad_agree():
         m.solve(solver=s)
         obj_vals[s] = m.objective_value
     assert abs(obj_vals["glover"] - obj_vals["quad"]) <= EmsModel.REL_TOL
+
+
+def test_glover_concave_oa_agree():
+    seed = np.random.randint(1, 1000)
+    solvers = ["glover", "concave_oa"]
+    obj_vals = {}
+    for s in solvers:
+        np.random.seed(seed)
+        m = EmsModel()
+        x = m.binary_var_list(10)
+        for _x in x:
+            m.set_dvar_location(_x, np.random.randint(0, 100, size=2))
+        w = np.random.randint(0, 100, size=len(x))
+        m.add_constraint(m.dot(x, w) <= 0.5 * w.sum())
+        m.solve(solver=s)
+        obj_vals[s] = m.objective_value
+    assert abs(obj_vals["glover"] - obj_vals["concave_oa"]) <= EmsModel.REL_TOL
+
+
+def test_quad_concave_oa_agree():
+    seed = np.random.randint(1, 1000)
+    solvers = ["quad", "concave_oa"]
+    obj_vals = {}
+    for s in solvers:
+        np.random.seed(seed)
+        m = EmsModel()
+        x = m.binary_var_list(10)
+        for _x in x:
+            m.set_dvar_location(_x, np.random.randint(0, 100, size=2))
+        w = np.random.randint(0, 100, size=len(x))
+        m.add_constraint(m.dot(x, w) <= 0.5 * w.sum())
+        m.solve(solver=s)
+        obj_vals[s] = m.objective_value
+    assert abs(obj_vals["quad"] - obj_vals["concave_oa"]) <= EmsModel.REL_TOL
 
 
 def test_glover_repoa_no_lp_tangents_agree():
