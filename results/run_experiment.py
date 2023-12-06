@@ -1,3 +1,4 @@
+import copy
 import os
 import sys
 
@@ -13,7 +14,17 @@ from data.instance_handler import (
 
 from emsca.model import EmsModel
 
-LOG_FILE = "results/results.log"
+LOG_FILE = "results/results_test.log"
+TIME_LIMIT = 0.1
+
+RUN_CDP = False
+RUN_GDP = False
+RUN_RCDP = True
+RUN_RGDP = True
+
+ALL_SOLVERS = EmsModel.ALL_SOLVER_OPTIONS
+DC_SOLVERS = [(s, rc) for s in ["repoa", "fcard"] for rc in [True, "rootonly", False]]
+OA_SOLVERS = [(s, False) for s in ["repoa", "concave_oa"]]
 
 
 def record_results(mdl: EmsModel):
@@ -27,122 +38,88 @@ def record_results(mdl: EmsModel):
         f.write(f"{mdl.iterations},{mdl.lp_cut_counter},{mdl.ip_cut_counter}\n")
 
 
-def solve_with_all_solvers(instance_generator, *args):
-    mdl: EmsModel
-    for s, rc in EmsModel.ALL_SOLVER_OPTIONS:
-        with instance_generator(*args) as mdl:
-            mdl.verbose = 0
-            mdl.solver = s
-            mdl.add_lp_tangents = rc
-            mdl.name = f"{mdl.name}_{s}_{rc}"
-            mdl.parameters.timelimit = 600
-            mdl.solve()
-            record_results(mdl)
+def standard_solve(solver, lp_tangents, instance):
+    mdl = copy.deepcopy(instance)
+    mdl.name = instance.name
+    mdl.verbose = 0
+    mdl.solver = solver
+    mdl.add_lp_tangents = lp_tangents
+    mdl.name = f"{mdl.name}_{solver}_{lp_tangents}"
+    mdl.parameters.timelimit = TIME_LIMIT
+    mdl.solve()
+    record_results(mdl)
 
 
-def solve_with_best_solvers(instance_generator, *args):
-    mdl: EmsModel
-    solvers = ["repoa", "fcard"]
-    rootcut = [True, "rootonly", False]
-    for s in solvers:
-        for rc in rootcut:
-            with instance_generator(*args) as mdl:
-                mdl.verbose = 0
-                mdl.solver = s
-                mdl.add_lp_tangents = rc
-                mdl.name = f"{mdl.name}_{s}_{rc}"
-                mdl.parameters.timelimit = 600
-                mdl.solve()
-                record_results(mdl)
-
-
-def solve_with_oa_solvers(instance_generator, *args):
-    mdl: EmsModel
-    solvers = ["repoa", "concave_oa"]
-    rootcut = False
-    for s in solvers:
-        with instance_generator(*args) as mdl:
-            mdl.verbose = 0
-            mdl.solver = s
-            mdl.add_lp_tangents = rootcut
-            mdl.name = f"{mdl.name}_{s}_{rootcut}"
-            mdl.parameters.timelimit = 600
-            mdl.solve()
-            record_results(mdl)
-
-
-def run_CDP_tests(directory, solver_fn=solve_with_all_solvers):
+def run_para_tests(solver_setups, generator, parameters):
     pool = Pool()
-    for file in os.listdir(directory):
-        if file.__contains__("GKD"):
-            pool.apply_async(
-                solver_fn,
-                (capacitated_diversity_problem_from_file, f"{directory}/{file}"),
-            )
+    for solver, lp_tangents in solver_setups:
+        for paras in parameters:
+            args = (solver, lp_tangents, generator(*paras))
+            pool.apply_async(standard_solve, args)
     pool.close()
     pool.join()
 
 
-def run_GDP_tests(directory, solver_fn=solve_with_all_solvers):
-    pool = Pool()
+def get_file_names(directory, keyword):
+    files = []
     for file in os.listdir(directory):
-        if file.__contains__("GKD"):
-            pool.apply_async(
-                solver_fn,
-                (generalized_diversity_problem_from_file, f"{directory}/{file}"),
-            )
-    pool.close()
-    pool.join()
+        if file.__contains__(keyword):
+            files.append(f"{directory}/{file}")
+    return files
 
 
-def run_RCDP_tests(solver_fn=solve_with_best_solvers):
+def get_RCDP_parameters():
+    parameters = []
     seed = 0
-    pool = Pool()
     for num in [1000, 1500, 2000, 2500, 3000]:
         for coords in [2, 10, 20]:
             for capacity_ratio in [0.2, 0.3]:
                 for k in range(5):
                     seed += 1
-                    pool.apply_async(
-                        solver_fn,
-                        (
-                            random_capacitated_diversity_problem,
-                            num,
-                            coords,
-                            capacity_ratio,
-                            seed,
-                        ),
-                    )
-    pool.close()
-    pool.join()
+                    parameters.append((num, coords, capacity_ratio, seed))
+    return parameters
 
 
-def run_RGDP_tests(solver_fn=solve_with_best_solvers):
+def get_RGDP_parameters():
+    parameters = []
     seed = 0
-    pool = Pool()
     for num in [1000, 1500, 2000, 2500, 3000]:
         for coords in [2, 10, 20]:
             for capacity_ratio in [0.2, 0.3]:
                 for cost_ratio in [0.5, 0.6]:
                     for k in range(5):
                         seed += 1
-                        pool.apply_async(
-                            solver_fn,
-                            (
-                                random_generalized_diversity_problem,
-                                num,
-                                coords,
-                                capacity_ratio,
-                                cost_ratio,
-                                seed,
-                            ),
+                        parameters.append(
+                            (num, coords, capacity_ratio, cost_ratio, seed)
                         )
-    pool.close()
-    pool.join()
+    return parameters
 
 
 if __name__ == "__main__":
-    run_CDP_tests("results/data/CDP")
-    run_GDP_tests("results/data/GDP")
-    run_RCDP_tests()
-    run_RGDP_tests()
+    # CDP tests
+    if RUN_CDP:
+        run_para_tests(
+            ALL_SOLVERS,
+            capacitated_diversity_problem_from_file,
+            get_file_names("results/data/CDP", "CDP"),
+        )
+
+    # GDP tests
+    if RUN_GDP:
+        run_para_tests(
+            ALL_SOLVERS,
+            generalized_diversity_problem_from_file,
+            get_file_names("results/data/GDP", "GDP"),
+        )
+
+    # RCDP tests
+    if RUN_RCDP:
+        run_para_tests(
+            DC, random_capacitated_diversity_problem, get_RCDP_parameters()
+        )
+
+    # RGDP tests
+    if RUN_RGDP:
+        run_para_tests(
+            DC, random_generalized_diversity_problem, get_RGDP_parameters()
+        )
