@@ -16,6 +16,7 @@ from emsca.model import EmsModel
 
 LOG_FILE = "results/results.log"
 TIME_LIMIT = 600
+THREAD_LIMIT = 16
 
 ALL_SOLVERS = EmsModel.ALL_SOLVER_OPTIONS
 DC_SOLVERS = [(s, rc) for s in ["repoa", "fcard"] for rc in [True, "rootonly", False]]
@@ -55,7 +56,7 @@ def standard_solve(solver, lp_tangents, generator, parameters):
 
 
 def run_para_tests(solver_setups, generator, parameters):
-    pool = Pool()
+    pool = Pool(processes=THREAD_LIMIT)
     for solver, lp_tangents in solver_setups:
         for paras in parameters:
             args = (solver, lp_tangents, generator, paras)
