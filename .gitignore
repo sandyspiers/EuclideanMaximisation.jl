@@ -1,7 +1,8 @@
 __pycache__
 .vscode
 .pytest_cache
-log
+
+# Instances
 results/data/CDP/*
 results/data/GDP/*
 results/data/RCDP/*
@@ -10,6 +11,7 @@ results/data/RGDP/*
 !results/data/GDP/instance_list.txt
 !results/data/RCDP/instance_list.txt
 !results/data/RGDP/instance_list.txt
-results/data/Auspost/*
-fig
+
+# Save results
 *.csv
+!results/results.csv

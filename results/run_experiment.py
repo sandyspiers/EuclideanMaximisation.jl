@@ -13,7 +13,7 @@ from results.instance_handler import (
 
 from emsca.model import EmsModel
 
-LOG_FILE = "results/results.log"
+LOG_FILE = "results/results.csv"
 TIME_LIMIT = 600
 THREAD_LIMIT = 16
 
