@@ -13,9 +13,9 @@ from results.instance_handler import (
 
 from emsca.model import EmsModel
 
-LOG_FILE = "results/results.csv"
-TIME_LIMIT = 600
-THREAD_LIMIT = 16
+LOG_FILE = "results/results_test.csv"
+TIME_LIMIT = 1
+THREAD_LIMIT = None
 
 ALL_SOLVERS = EmsModel.ALL_SOLVER_OPTIONS
 CUT_SOLVERS = [
@@ -24,10 +24,11 @@ CUT_SOLVERS = [
 
 # Which solvers to use
 # If you dont want to run a test, leave as None or empty list
-CDP_SOLVERS = ALL_SOLVERS
-GDP_SOLVERS = ALL_SOLVERS
-RCDP_SOLVERS = CUT_SOLVERS
-RGDP_SOLVERS = CUT_SOLVERS
+_oa = [("concave_oa", False)]
+CDP_SOLVERS = _oa  # ALL_SOLVERS
+GDP_SOLVERS = _oa  # ALL_SOLVERS
+RCDP_SOLVERS = _oa  # CUT_SOLVERS
+RGDP_SOLVERS = _oa  # CUT_SOLVERS
 
 
 def record_results(mdl: EmsModel):
@@ -57,7 +58,10 @@ def standard_solve(solver, lp_tangents, generator, parameters):
 
 
 def run_para_tests(solver_setups, generator, parameters):
-    pool = Pool(processes=THREAD_LIMIT)
+    # Expect to time per solve >> time to que
+    # To avoid mem overruns, garbage collect *after every solve*
+    # Overall, shouldnt add too much time, compared against time to solve everything
+    pool = Pool(processes=THREAD_LIMIT, maxtasksperchild=1)
     for solver, lp_tangents in solver_setups:
         for paras in parameters:
             args = (solver, lp_tangents, generator, paras)
