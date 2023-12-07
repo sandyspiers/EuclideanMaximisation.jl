@@ -18,15 +18,16 @@ TIME_LIMIT = 600
 THREAD_LIMIT = 16
 
 ALL_SOLVERS = EmsModel.ALL_SOLVER_OPTIONS
-DC_SOLVERS = [(s, rc) for s in ["repoa", "fcard"] for rc in [True, "rootonly", False]]
-OA_SOLVERS = [(s, False) for s in ["repoa", "concave_oa"]]
+CUT_SOLVERS = [
+    (s, rc) for s in ["repoa", "fcard"] for rc in [True, "rootonly", False]
+] + [("concave_oa", False)]
 
 # Which solvers to use
 # If you dont want to run a test, leave as None or empty list
 CDP_SOLVERS = ALL_SOLVERS
 GDP_SOLVERS = ALL_SOLVERS
-RCDP_SOLVERS = DC_SOLVERS
-RGDP_SOLVERS = DC_SOLVERS
+RCDP_SOLVERS = CUT_SOLVERS
+RGDP_SOLVERS = CUT_SOLVERS
 
 
 def record_results(mdl: EmsModel):
