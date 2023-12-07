@@ -106,7 +106,7 @@ if __name__ == "__main__":
         run_para_tests(
             CDP_SOLVERS,
             capacitated_diversity_problem_from_file,
-            get_file_names("results/data/CDP", "CDP"),
+            get_file_names("results/data/CDP", "GKD"),
         )
 
     # GDP tests
@@ -114,7 +114,7 @@ if __name__ == "__main__":
         run_para_tests(
             GDP_SOLVERS,
             generalized_diversity_problem_from_file,
-            get_file_names("results/data/GDP", "GDP"),
+            get_file_names("results/data/GDP", "GKD"),
         )
 
     # RCDP tests
