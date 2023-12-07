@@ -40,9 +40,11 @@ def record_results(mdl: EmsModel):
         f.write(f"{mdl.iterations},{mdl.lp_cut_counter},{mdl.ip_cut_counter}\n")
 
 
-def standard_solve(solver, lp_tangents, instance):
-    mdl = copy.deepcopy(instance)
-    mdl.name = instance.name
+def standard_solve(solver, lp_tangents, generator, parameters):
+    if isinstance(parameters, str):
+        mdl = generator(parameters)
+    else:
+        mdl = generator(*parameters)
     mdl.verbose = 0
     mdl.solver = solver
     mdl.add_lp_tangents = lp_tangents
@@ -56,10 +58,7 @@ def run_para_tests(solver_setups, generator, parameters):
     pool = Pool()
     for solver, lp_tangents in solver_setups:
         for paras in parameters:
-            if isinstance(paras, str):
-                args = (solver, lp_tangents, generator(paras))
-            else:
-                args = (solver, lp_tangents, generator(*paras))
+            args = (solver, lp_tangents, generator, paras)
             pool.apply_async(standard_solve, args)
     pool.close()
     pool.join()
