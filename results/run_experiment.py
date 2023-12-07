@@ -52,6 +52,7 @@ def standard_solve(solver, lp_tangents, generator, parameters):
     mdl.parameters.timelimit = TIME_LIMIT
     mdl.solve()
     record_results(mdl)
+    del mdl
 
 
 def run_para_tests(solver_setups, generator, parameters):
