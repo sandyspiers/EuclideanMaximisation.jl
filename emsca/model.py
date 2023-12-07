@@ -341,7 +341,11 @@ class EmsModel(CplexModel):
 
         # Solve
         self._log("INFO", "Solving by Concaved Outer-Approximation")
-        return super().solve(log_output=self._if_log("CPLEX"), **kwargs)
+        r = super().solve(log_output=self._if_log("CPLEX"), **kwargs)
+
+        # set metrics before returing
+        self.ip_cut_counter = tangent_planes.nb_cuts
+        return r
 
     def _solve_repoa(self, **kwargs):
         """
