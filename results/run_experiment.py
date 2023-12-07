@@ -24,11 +24,10 @@ CUT_SOLVERS = [
 
 # Which solvers to use
 # If you dont want to run a test, leave as None or empty list
-_oa = [("concave_oa", False)]
-CDP_SOLVERS = _oa  # ALL_SOLVERS
-GDP_SOLVERS = _oa  # ALL_SOLVERS
-RCDP_SOLVERS = _oa  # CUT_SOLVERS
-RGDP_SOLVERS = _oa  # CUT_SOLVERS
+CDP_SOLVERS = ALL_SOLVERS
+GDP_SOLVERS = ALL_SOLVERS
+RCDP_SOLVERS = CUT_SOLVERS
+RGDP_SOLVERS = CUT_SOLVERS
 
 
 def record_results(mdl: EmsModel):
