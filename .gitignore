@@ -15,3 +15,6 @@ results/data/RGDP/*
 # Save results
 *.csv
 !results/results.csv
+
+# Ignore output figures for now
+results/fig
