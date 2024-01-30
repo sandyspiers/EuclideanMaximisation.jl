@@ -1,5 +1,8 @@
 # Euclidean Max-Sum Cut Algorithm (EMSCA)
 
+**DEPRECATED VERSION**: This version was first submitted to COR and arXiv, and is now deprecated.
+However, the new code base is written in Julia, so we keep this Python version avalible for those interested.
+
 This repo contains an exact solver for binary quadratic programs type
 
 ```txt
