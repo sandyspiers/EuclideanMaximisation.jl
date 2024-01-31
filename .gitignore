@@ -9,4 +9,5 @@ cplex*.bin
 gurobi.lic
 
 # ignore instance data (please download and unzip instead)
-data/instance
+data/instance/*
+!data/instance/README.md
