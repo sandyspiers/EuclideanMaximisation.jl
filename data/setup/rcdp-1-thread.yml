@@ -1,0 +1,30 @@
+name: "rcdp-1-thread"
+run: true
+generator: "random_capacitated_diversity_problem"
+solver:
+  - "repoa"
+  - "fcard"
+  - "fcard50"
+  - "fcard100"
+optimizer:
+  - "CPLEX"
+  - "Gurobi"
+timelimit: 600
+workers: 16
+optimizer_threads: 1
+instance:
+  n:
+    - 1000
+    - 1500
+    - 2000
+    - 2500
+    - 3000
+  s:
+    - 2
+    - 10
+    - 20
+  b:
+    - 0.2
+    - 0.3
+  seed: 1
+  repeats: 5

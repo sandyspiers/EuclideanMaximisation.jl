@@ -1,0 +1,1 @@
+nohup docker compose run experiments &

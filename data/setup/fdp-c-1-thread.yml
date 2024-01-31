@@ -1,0 +1,19 @@
+name: "fdp-c-1-thread"
+run: true
+generator: "file_diversity_problem"
+solver:
+  - "repoa"
+  - "fcard"
+  - "fcard50"
+  - "fcard100"
+  - "quad"
+  - "glov"
+optimizer:
+  - "CPLEX"
+  - "Gurobi"
+timelimit: 600
+workers: 16
+optimizer_threads: 1
+instance:
+  filename: "data/instance/GKD-c/*"
+  c: 0.1

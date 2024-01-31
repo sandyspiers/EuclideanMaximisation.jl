@@ -1,0 +1,18 @@
+name: "fgdp-1-thread"
+run: true
+generator: "file_generalized_diversity_problem"
+solver:
+  - "repoa"
+  - "fcard"
+  - "fcard50"
+  - "fcard100"
+  - "quad"
+  - "glov"
+optimizer:
+  - "CPLEX"
+  - "Gurobi"
+timelimit: 600
+workers: 16
+optimizer_threads: 1
+instance:
+  filename: "data/instance/GDP (Const.)/*"

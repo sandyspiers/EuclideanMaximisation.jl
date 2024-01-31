@@ -1,17 +1,12 @@
-__pycache__
+# cachers
+nohup.out
 .vscode
-.pytest_cache
+__pycache__
 
-# Instances
-results/data/CDP/*
-results/data/GDP/*
-results/data/RCDP/*
-results/data/RGDP/*
-!results/data/CDP/instance_list.txt
-!results/data/GDP/instance_list.txt
-!results/data/RCDP/instance_list.txt
-!results/data/RGDP/instance_list.txt
+# files in bin
+*.zip
+cplex*.bin
+gurobi.lic
 
-# Save results
-*.csv
-!results/results.csv
+# ignore instance data (please download and unzip instead)
+data/instance

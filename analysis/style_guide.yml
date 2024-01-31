@@ -1,0 +1,81 @@
+repoa:
+  label: "Repeated ILP"
+  short_name: "Repeated ILP"
+  color: "#942911"
+fcard:
+  label: "Forced Cardinality, $\\gamma=0$"
+  short_name: "$\\gamma=0$"
+  color: "#3C91E6"
+fcard50:
+  label: "Forced Cardinality, $\\gamma=0.5n$"
+  short_name: "$\\gamma=0.5n$"
+  color: "#3C91E6"
+  linestyle: "--"
+fcard100:
+  label: "Forced Cardinality, $\\gamma=n$"
+  short_name: "$\\gamma=n$"
+  color: "#3C91E6"
+  linestyle: ":"
+glov:
+  label: "Glover Linearisation"
+  short_name: "Glover"
+  color: "#9FD356"
+quad:
+  label: "Quadratic Program"
+  short_name: "Quadratic"
+  color: "#FA824C"
+
+('Gurobi', 'repoa'):
+  label: "Repeated ILP"
+  color: "#942911"
+  marker: "$G$"
+('Gurobi', 'fcard'):
+  label: "Forced Cardinality, $\\gamma=0$"
+  color: "#3C91E6"
+  marker: "$G$"
+('Gurobi', 'fcard50'):
+  label: "Forced Cardinality, $\\gamma=0.5n$"
+  color: "#3C91E6"
+  linestyle: "--"
+  marker: "$G$"
+('Gurobi', 'fcard100'):
+  label: "Forced Cardinality, $\\gamma=n$"
+  color: "#3C91E6"
+  linestyle: ":"
+  marker: "$G$"
+('Gurobi', 'glov'):
+  label: "Glover Linearisation"
+  color: "#9FD356"
+  marker: "$G$"
+('Gurobi', 'quad'):
+  label: "Quadratic Program"
+  color: "#FA824C"
+  marker: "$G$"
+
+
+('CPLEX', 'repoa'):
+  label: "Repeated ILP"
+  color: "#942911"
+  marker: "$X$"
+('CPLEX', 'fcard'):
+  label: "Forced Cardinality, $\\gamma=0$"
+  color: "#3C91E6"
+  marker: "$X$"
+('CPLEX', 'fcard50'):
+  label: "Forced Cardinality, $\\gamma=0.5n$"
+  color: "#3C91E6"
+  linestyle: "--"
+  marker: "$X$"
+('CPLEX', 'fcard100'):
+  label: "Forced Cardinality, $\\gamma=n$"
+  color: "#3C91E6"
+  linestyle: ":"
+  marker: "$X$"
+('CPLEX', 'glov'):
+  label: "Glover Linearisation"
+  color: "#9FD356"
+  marker: "$X$"
+('CPLEX', 'quad'):
+  label: "Quadratic Program"
+  color: "#FA824C"
+  marker: "$X$"

@@ -1,0 +1,26 @@
+services:
+  # Open up a REPL session in container
+  euclid-max:
+    container_name: euclidean-maximisation-jumip
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PROJ_DIR: /euclidean-maximisation
+    volumes:
+      - ./bin/gurobi.lic:/opt/gurobi/gurobi.lic:ro
+      - ./:/euclidean-maximisation/
+    working_dir: /euclidean-maximisation/
+  # Run experiments in container
+  experiments:
+    container_name: euclidean-maximisation-jumip
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PROJ_DIR: /euclidean-maximisation
+    volumes:
+      - ./bin/gurobi.lic:/opt/gurobi/gurobi.lic:ro
+      - ./:/euclidean-maximisation/
+    working_dir: /euclidean-maximisation/
+    command: ["julia", "-e", "using EuclideanMaximisation.Experimenter:run_experiment; run_experiment(\"experiments.yml\")"]
