@@ -1,6 +1,6 @@
 # EuclideanMaximisation.jl
 
-This repo is associated with `Cutting Plane Algorithms can be Exact for Euclidean Max-Sum Problems`, (manuscript under review).
+This repo is associated with `Solving Euclidean Max-Sum problems exactly with cutting planes` [1].
 It contains two exact cutting-plane solvers for binary quadratic programs of type
 
 ```txt
@@ -165,4 +165,4 @@ This will run the experiments in the background, as they can take a long time.
 
 ## References
 
-[1] Hoa T. Bui, Sandy Spiers, Ryan Loxton, 2023. *Cutting Plane Algorithms can be Exact for Euclidean Max-Sum Problems*, Manuscript under review.
+[1] [Bui, H. T., Spiers, S., & Loxton, R. (2024). Solving Euclidean Max-Sum problems exactly with cutting planes. Computers & Operations Research, 168, 106682.](https://doi.org/10.1016/j.cor.2024.106682)
